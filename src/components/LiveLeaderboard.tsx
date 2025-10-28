@@ -1,59 +1,31 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-
-interface LeaderboardEntry {
-  id: number;
-  name: string;
-  location?: string;
-  referrals: number;
-  imageUrl: string;
-}
+import useSWR from 'swr';
+import { fetchLeaderboard } from '@/lib/api';
 
 const LiveLeaderboard: React.FC = () => {
   const router = useRouter();
   const [isWeekly, setIsWeekly] = useState(true);
   const [showAll, setShowAll] = useState(false);
-  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchLeaderboard = async (period: string, limit: number = 20) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch(`https://app.yummealsapp.com/api/referral/leaderboard?period=${period}&limit=${limit}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch leaderboard data');
-      }
-      const apiResponse = await response.json();
-      const leaderboardArray = apiResponse.leaderboard || [];
-      const mappedData: LeaderboardEntry[] = leaderboardArray.map((item: { id: number; name: string; total_referrals: number }) => ({
-        id: item.id,
-        name: item.name,
-        location: 'Unknown',
-        referrals: item.total_referrals,
-        imageUrl: '/man.svg',
-      }));
-      setLeaderboardData(mappedData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
+  const period = isWeekly ? 'weekly' : 'overall';
+  const { data: leaderboardData, error, isLoading } = useSWR(
+    `/api/referral/leaderboard?period=${period}&limit=20`,
+    () => fetchLeaderboard(period, 20),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: true,
+      dedupingInterval: 30000, // Cache for 30 seconds
     }
-  };
+  );
 
-  useEffect(() => {
-    const period = isWeekly ? 'weekly' : 'overall';
-    fetchLeaderboard(period);
-  }, [isWeekly]);
+  const displayedData = showAll ? (leaderboardData || []) : ((leaderboardData || []).slice(0, 6));
 
-  const displayedData = showAll ? leaderboardData : (Array.isArray(leaderboardData) ? leaderboardData.slice(0, 6) : []);
-
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen p-4 bg-white">
+      <div className="flex items-center justify-center max-h-screen p-4 bg-white">
         <div className="text-center">
           <div className="text-xl font-semibold text-gray-800">Loading Leaderboard...</div>
         </div>
@@ -63,7 +35,7 @@ const LiveLeaderboard: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen p-4 bg-white">
+      <div className="flex items-center justify-center max-h-screen  p-4 bg-white">
         <div className="text-center">
           <div className="text-xl font-semibold text-red-600">Error: {error}</div>
           <button
@@ -78,7 +50,7 @@ const LiveLeaderboard: React.FC = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-white">
+    <div className="flex items-center justify-center max-h-screen  p-4 bg-white">
       <div className="w-full max-w-6xl mt-6">
         <h2 className="mb-2 text-3xl font-extrabold text-center text-gray-800">Live Leaderboard</h2>
         <p className="text-[20px] leading-[140%] tracking-[-0.02em] text-center mb-6 text-[#000000]">See who&apos;s climbing to the top each day!</p>
@@ -96,39 +68,39 @@ const LiveLeaderboard: React.FC = () => {
           <span className={`font-bold ${!isWeekly ? 'text-black' : 'text-black'}`}>Overall Winners</span>
         </div>
         <div className="space-y-4">
-          {displayedData.map((entry, index) => (
+          {displayedData.map(({ id, name, location, referrals, imageUrl }, index) => (
             <div
-              key={entry.id}
-              className="flex items-center  justify-between bg-[#64961A] px-4 py-1 rounded-xl shadow-md"
+              key={id}
+              className="flex items-center justify-between bg-[#64961A] px-4 py-1 rounded-xl shadow-md"
             >
               <div className="flex items-center gap-4">
                 <span className="relative flex items-center justify-center w-8 h-8">
                   {index === 0 ? (
                     <Image src="/crown_1.svg" fill alt="Crown" className="w-8 h-8" />
                   ) : (
-                    <Image src="/crown_2.svg" fill alt="Crown" className="w-8 h-8"/>
+                    <Image src="/crown_2.svg" fill alt="Crown" className="w-8 h-8" />
                   )}
                   <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-white drop-shadow-sm">
                     {index + 1}
                   </span>
                 </span>
-                <Image src={entry.imageUrl} width={12} height={12} alt={`${entry.name}'s profile`} className="object-cover w-12 h-12 rounded-full"/>
+                <Image src={imageUrl} width={12} height={12} alt={`${name}'s profile`} className="object-cover w-12 h-12 rounded-full" />
                 <div>
-                  <div className="text-xs font-semibold text-white lg:text-sm">{entry.name}</div>
-                  <div className="text-xs text-green-100 lg:text-sm">{entry.location}</div>
+                  <div className="text-xs font-semibold text-white lg:text-sm">{name}</div>
+                  <div className="text-xs text-green-100 lg:text-sm">{location}</div>
                 </div>
               </div>
               <div className="flex items-center gap-2 px-4 py-2">
-                <Image src="/cup.svg" width={10} height={10} alt="Trophy" className="w-10 h-10"/>
-                <div className='flex flex-col items-center justify-center'>
-                  <span className="text-sm font-bold text-white">{entry.referrals}</span>
+                <Image src="/cup.svg" width={10} height={10} alt="Trophy" className="w-10 h-10" />
+                <div className="flex flex-col items-center justify-center">
+                  <span className="text-sm font-bold text-white">{referrals}</span>
                   <span className="mt-2 text-xs text-green-100">Referrals</span>
                 </div>
               </div>
             </div>
           ))}
           <div className="flex justify-center mt-6 mb-6">
-            {!showAll && leaderboardData.length > 6 && (
+            {!showAll && displayedData.length === 6 && (
               <button
                 className="bg-[#64961A] sm:px-10 text-white px-4 py-2 rounded transition-colors cursor-pointer"
                 onClick={() => setShowAll(true)}
