@@ -30,7 +30,6 @@ export const fetchLeaderboard = async (period: string, limit: number = 20): Prom
   return leaderboardArray.map((item) => ({
     id: item.id,
     name: item.name,
-    location: 'Unknown',
     referrals: item.total_referrals,
     imageUrl: '/man.svg',
   }));

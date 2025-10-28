@@ -68,7 +68,7 @@ const LiveLeaderboard: React.FC = () => {
           <span className={`font-bold ${!isWeekly ? 'text-black' : 'text-black'}`}>Overall Winners</span>
         </div>
         <div className="space-y-4">
-          {displayedData.map(({ id, name, location, referrals, imageUrl }, index) => (
+          {displayedData.map(({ id, name, referrals, imageUrl }, index) => (
             <div
               key={id}
               className="flex items-center justify-between bg-[#64961A] px-4 py-1 rounded-xl shadow-md"
@@ -87,7 +87,7 @@ const LiveLeaderboard: React.FC = () => {
                 <Image src={imageUrl} width={12} height={12} alt={`${name}'s profile`} className="object-cover w-12 h-12 rounded-full" />
                 <div>
                   <div className="text-xs font-semibold text-white lg:text-sm">{name}</div>
-                  <div className="text-xs text-green-100 lg:text-sm">{location}</div>
+                  {/* <div className="text-xs text-green-100 lg:text-sm">{location}</div> */}
                 </div>
               </div>
               <div className="flex items-center gap-2 px-4 py-2">

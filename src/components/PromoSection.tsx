@@ -7,32 +7,21 @@ const PromoSection = () => {
       style={{ backgroundImage: "url(/soon.png)" }}
     >
       <div className="w-full mt-4 bg-opacity-50 rounded-lg ">
-        {/* <Image src="/lauch.png" alt="Yummeals" width={400} height={400} /> */}
-
         <div className="relative w-full aspect-square mx-auto flex items-center justify-between h-[40vh] sm:h-[90vh] sm:pb-16 sm:pt-6">
           <div className="lg:w-[40%] xl:[100%]  sm:w-[70%] md:w-[70%] w-full mx-auto relative">
-            {/* <div className="relative max-w-5xl p-4 mx-auto md:p-6"> */}
-            {/* Main heading */}
             <div className="absolute inset-0 top-[5%] mobile375:top-[2%] xs:top-[5%] sm:top-[3%]  md:top-[3%] lg:top-[3%] text-center font-extrabold text-3xl xs:text-[14px] sm:text-4xl md:text-4xl lg:text-4xl  leading-[1.6] xs:leading-[1.1] sm:leading-[1.15] lg:leading-[1.8] md:leading-[190%] xl:leading-[190%] xl:text-4xl  xs:tracking-normal sm:tracking-[-0.01em] lg:tracking-[-0.02em] px-0.5 xs:px-1 sm:px-2 md:px-0 pt-1 xs:pt-2 sm:pt-0 tracking-[1px] sm:tracking-0  z-50">
             Get <span className="text-[#F25B0A] font-extrabold xl:text-6xl  text-3xl sm:text-4xl md:text-5xl  ">FREE FOOD </span> for a
               <br />
              <span className="text-[#F25B0A] font-extrabold text-4xl xl:text-6xl md:text-5xl"> WHOLE YEAR!!!</span> 
             </div>
-           
-
-            {/* Circle with food images */}
-            {/* <div className="relative w-full max-w-xs mx-auto sm:max-w-sm md:max-w-2xl lg:max-w-3xl aspect-square"> */}
             <div className="relative mx-auto aspect-square">
-              {/* Center orange circle with text */}
               <div className="absolute inset-0 z-10 flex items-center justify-center">
                 <div className="bg-white  text-black rounded-full lg:w-[60%] lg:h-[60%]  w-[55%] h-[55%] p-4 flex flex-col items-center justify-center  xs:p-2 sm:p-4 md:p-6 lg:p-4 xl:p-2 ">
                   <p className="w-full text-center text-black font-poppins font-semibold sm:text-[2rem] xl:text-2xl lg:text-[1.0rem] lg:leading-[150%] xl:leading-[180%]  leading-[150%] text-sm  sm:mt-8 md:text-[1.2rem] sm:text-2xl md:mt-3  xl:mt-2  p-2 xl:p-2">
                   Promo runs from   <br /> <span className="font-extrabold">June 7th - July 6th, 2025</span>
                   </p>
                   <p className="w-full text-center font-poppins font-medium sm:text-[1.5rem] lg:text-[o.5rem] text-sm md:text-[1rem] xl:text-2xl xl:leading-[100%]">
-            
                   </p>
-               
                 </div>
               </div>
 
